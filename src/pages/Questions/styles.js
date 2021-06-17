@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const QuestionsBlock = styled.section`
     display: flex;
@@ -45,13 +45,16 @@ export const AlternativeButton = styled.button`
     display: flex;
     width: 100%;
     
-    
     font-size: 1.25rem;
     padding: 1.25rem;
     background-color: var(--blue-1000);
     margin-top: 1.25rem;
     cursor: pointer;
     border-radius: 8px;
+
+    ${({active}) => active && css`
+        border: 3px solid red;
+    `}
 `;
 
 export const Loading = styled.h2`

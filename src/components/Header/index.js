@@ -2,10 +2,10 @@ import React from 'react'
 
 import {HeaderBlock} from './styles.js'
 
-const Header = () => {
+const Header = (props) => {
     return (
         <> 
-            <HeaderBlock>
+            <HeaderBlock {...props}>
                 <img src="/logo.svg" alt='logo'/>
             </HeaderBlock>
         </>

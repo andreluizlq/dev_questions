@@ -10,109 +10,115 @@ import { QuestionsBlock, Image, AlternativesBlock, QuestionsContent, Questions, 
 
 
 const PagesQuestions = () => {
-
-    const [listQuestions, setListQuestions] = useState();
-    const [index, setIndex] = useState(0);
-    const [inProgress, setInProgress] = useState(1);
-    const [currentAnswer, setCurrentAnswer] = useState();
-    const [userResponse, setUserResponse] = useState([]);
     const history = useHistory();
 
-    async function questions(){
-        const count = await localStorage.getItem("count");
-        const response = await API.get(`?amount=${count}`);
-        let dataFormatted = [] 
-        if( response.status === 200 ){
-            response.data.results.map((item)=>{
-                return(
-                    dataFormatted.push({
-                        incorrect_answers: [item.incorrect_answers],
-                        question: item.question,
-                        answers: [item.correct_answer, ...item.incorrect_answers].sort(),
-                        correct_answer: item.correct_answer
-                    })
-                )
-            })
-        }
-        setListQuestions(dataFormatted)
-    }
+    const [currentQuestion, setCurrentQuestion] = useState(0)
+    const [listQuestions, setListQuestions] = useState([]);
 
-    function nextQuestions(){   
-        if(currentAnswer){
-            let responseFormatted = {
-                question: listQuestions[index].question,
-                answers: listQuestions[index].answers,
-                correct_answer: listQuestions[index].correct_answer,
-                incorrect_answers: listQuestions[index].incorrect_answers,
-                current_answer: currentAnswer
-            }
-            
-            setUserResponse ([responseFormatted, ...userResponse])
-            setCurrentAnswer()
+    const [currentAnswer, setCurrentAnswer] = useState(null);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
 
-            if(index < listQuestions.length-1){
-                setIndex(index + 1)
-                setInProgress(inProgress + 1)
-                console.log(userResponse)
-            }else{
-                saveLocalStorage(userResponse)
-                history.push('/');
-            }
-
-        }else{ alert("select a question") }
-    }
-
-    function saveLocalStorage (){
-        if(userResponse.length === listQuestions.length){
-            console.log("entrou")
-            localStorage.setItem("userResponse", JSON.stringify(userResponse))
-        }
-    }
-
-    function active(event){
-        let button = event.target
-        setCurrentAnswer(event.target.outerText)
-        const allButtons = (button.parentNode.children);
-        for(let i=0; i<allButtons.length; i++){
-            allButtons[i].removeAttribute("id")
-        }
-        button.setAttribute("id", "active")
-    }
-
-    function getProgress(){
-        return (inProgress / listQuestions.length * 100).toFixed(2);
-    }
+    const [answers, setAnswers] = useState([]);
 
     useEffect(() => {
-        questions()
-    },[])
+        async function fetchQuestions() {
+            try {
+                const count = await localStorage.getItem("count");
+                const response = await API.get(`?amount=${count}`);
+
+                let dataFormatted = []
+
+                if (response.status === 200) {
+                    response.data.results.map((item) => {
+                        return (
+                            dataFormatted.push({
+                                incorrect_answers: [item.incorrect_answers],
+                                question: item.question,
+                                answers: [item.correct_answer, ...item.incorrect_answers].sort(),
+                                correct_answer: item.correct_answer
+                            })
+                        )
+                    })
+                }
+
+                setListQuestions(dataFormatted)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchQuestions()
+    }, [])
+
+    function goToNextQuestion() {
+        if (currentAnswer) {
+            const isCorrect = currentAnswer === listQuestions[currentQuestion].correct_answer;
+            const answer = { ...listQuestions[currentQuestion], isCorrect, selectedAnswer: currentAnswer }
+
+            if (currentQuestion + 1 === listQuestions.length) {
+                const reports = localStorage.getItem('reports');
+                const final = JSON.stringify([...answers, answer]);
+
+                if (reports) {
+                    localStorage.setItem('reports', `${reports}###${final}`)
+                } else {
+                    localStorage.setItem('reports', final);
+                }
+
+                return history.push('/')
+            }
+
+            setAnswers([...answers, answer])
+            setCurrentQuestion(currentQuestion + 1);
+
+            setCurrentAnswer(null);
+            setSelectedAnswer(null);
+        } else {
+            alert("select a question")
+        }
+    }
 
     return (
         <>
-            <Header/>
+            <Header onClick={() => console.log(answers)} />
             <QuestionsBlock>
                 <QuestionsContent>
-                    { listQuestions ?     
+                    {listQuestions.length ?
                         <AlternativesBlock>
-                            <LinearProgress id={"linear"} variant="determinate" value={getProgress()}/>
-                            <Questions>{listQuestions[index].question}</Questions>
-                            <div>   
-                                {listQuestions[index].answers.map ((answer) => {
-                                    return(
-                                        <AlternativeButton id={"option"} onClick={active} key={answer}>{answer}</AlternativeButton>
+                            {/* <LinearProgress value={currentQuestion ? Math.ceil(100/listQuestions.length) : currentQuestion} */}
+
+                            {/* id={"linear"} variant="determinate" /> */}
+                            <Questions>{listQuestions[currentQuestion].question}</Questions>
+
+                            <div>
+                                {listQuestions[currentQuestion].answers.map((answer, index) => {
+                                    return (
+                                        <AlternativeButton
+                                            key={index}
+                                            active={selectedAnswer === index}
+                                            onClick={() => {
+                                                setCurrentAnswer(answer);
+                                                setSelectedAnswer(index);
+                                            }}
+                                        >
+                                            {answer}
+                                        </AlternativeButton>
                                     )
                                 })}
                             </div>
-                            <Button onClick={nextQuestions}>Next</Button>
+
+                            <Button onClick={goToNextQuestion}>Next</Button>
+
                         </AlternativesBlock>
-                    : 
+                        :
                         <Loading>Loading...</Loading>
                     }
                 </QuestionsContent>
             </QuestionsBlock>
-            <Image src="/vectorDown.svg" alt='Vector Down'/> 
+
+            <Image src="/vectorDown.svg" alt='Vector Down' />
         </>
     );
 }
-    
+
 export default PagesQuestions;
