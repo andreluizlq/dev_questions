@@ -85,9 +85,11 @@ const PagesQuestions = () => {
                 <QuestionsContent>
                     {listQuestions.length ?
                         <AlternativesBlock>
-                            {/* <LinearProgress value={currentQuestion ? Math.ceil(100/listQuestions.length) : currentQuestion} */}
-
-                            {/* id={"linear"} variant="determinate" /> */}
+                            <LinearProgress
+                                value={currentQuestion ? Math.ceil(100 / listQuestions.length) : currentQuestion}
+                                id={"linear"}
+                                variant="determinate"
+                            />
                             <Questions>{listQuestions[currentQuestion].question}</Questions>
 
                             <div>
