@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/Header/index";
-import API from "../../services/api.js";
+import API from "../../services/api";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { useHistory } from "react-router-dom";
 

@@ -2,11 +2,11 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import PagesHome from "./Home/index";
-import PagesVerification from "./Verification/index.js";
+import PagesVerification from "./Verification/index";
 import PagesPreviousReports from "./PreviousReports/index";
 import PagesQuestions from "./Questions/index";
 
-import GlobalStyle from "../styles/global.js";
+import GlobalStyle from "../styles/global";
 
 const Root = () => {
   return (
