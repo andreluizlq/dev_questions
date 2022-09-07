@@ -39,7 +39,11 @@ export const Questions = styled.h2`
   text-align: justify;
 `;
 
-export const AlternativeButton = styled.button`
+type AlternativeButtonProps = {
+  active: boolean;
+};
+
+export const AlternativeButton = styled.button<AlternativeButtonProps>`
   display: flex;
   width: 100%;
 

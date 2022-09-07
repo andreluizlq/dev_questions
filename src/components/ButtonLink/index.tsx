@@ -1,13 +1,20 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
-import { ButtonBlock } from './styles'
+import React from "react";
+import { Link } from "react-router-dom";
+import { ButtonBlock } from "./styles";
 
-export const ButtonLink = ({text, link, onClick}) => {
-    return (
-        <> 
-            <Link to={link}>
-                <ButtonBlock onClick={onClick}>{text}</ButtonBlock>
-            </Link> 
-        </>
-    );
+type ButtonProps = {
+  text: string;
+  link: string;
 };
+
+const ButtonLink: React.FC<ButtonProps> = ({ text, link }) => {
+  return (
+    <>
+      <Link to={link}>
+        <ButtonBlock>{text}</ButtonBlock>
+      </Link>
+    </>
+  );
+};
+
+export default ButtonLink;
