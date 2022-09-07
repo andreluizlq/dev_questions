@@ -1,9 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { ButtonBlock } from './styles'
 
-import {ButtonBlock} from './styles.js'
-
-const ButtonLink = ({text, link, onClick}) => {
+export const ButtonLink = ({text, link, onClick}) => {
     return (
         <> 
             <Link to={link}>
@@ -11,6 +10,4 @@ const ButtonLink = ({text, link, onClick}) => {
             </Link> 
         </>
     );
-}
-    
-export default ButtonLink; 
+};
