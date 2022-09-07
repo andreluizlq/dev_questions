@@ -1,24 +1,25 @@
 import React from "react";
 import { ButtonLess, ButtonMore, CountBlock } from "./styles";
-import { useCount } from "../../context/Count";
+import type { RootState } from "../../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { decrement, increment } from "../../redux/slices/counter";
 
 const Count: React.FC = () => {
-  const { count, setCount } = useCount();
+  const count = useSelector((state: RootState) => state.counter.value);
+  const dispatch = useDispatch();
 
   function countLess() {
     if (count > 1) {
-      setCount(count - 1);
-    } else {
-      setCount(count);
+      dispatch(decrement());
     }
   }
 
   return (
     <>
       <CountBlock>
-        <ButtonLess onClick={() => setCount(countLess)}>-</ButtonLess>
+        <ButtonLess onClick={() => countLess()}>-</ButtonLess>
         <p>{count}</p>
-        <ButtonMore onClick={() => setCount(count + 1)}>+</ButtonMore>
+        <ButtonMore onClick={() => dispatch(increment())}>+</ButtonMore>
       </CountBlock>
     </>
   );
