@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 export interface CounterState {
   value: number;
 }
+
 const countStorage = localStorage.getItem("count");
 const initialState: CounterState = {
   value: countStorage ? stringToNumberFormat(countStorage) : 1,
@@ -15,24 +16,23 @@ export const counterSlice = createSlice({
   reducers: {
     increment: (state) => {
       state.value += 1;
+      localStorage.setItem("count", state.value.toString());
     },
     decrement: (state) => {
       state.value -= 1;
-    },
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
-    },
-    setCount: (state) => {
       localStorage.setItem("count", state.value.toString());
     },
     resetCount: (state) => {
       localStorage.setItem("count", "1");
       state.value = 1;
     },
+    incrementByAmount: (state, action: PayloadAction<number>) => {
+      state.value += action.payload;
+    },
   },
 });
 
-export const { increment, decrement, incrementByAmount, setCount, resetCount } =
+export const { increment, decrement, incrementByAmount, resetCount } =
   counterSlice.actions;
 
 export default counterSlice.reducer;

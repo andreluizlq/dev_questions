@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header/index";
-import API from "../../services/api";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { useHistory } from "react-router-dom";
 import type { RootState } from "../../redux/store";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
 
 import {
   QuestionsBlock,
@@ -16,12 +16,8 @@ import {
   Loading,
   Button,
 } from "./styles";
-
-type ItemProps = {
-  incorrect_answers: string[];
-  question: string;
-  correct_answer: string;
-};
+import { fetchQuestions } from "../../redux/slices/questions";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 type DataFormattedProps = {
   incorrect_answers: string[];
@@ -38,46 +34,22 @@ type SelectedAnswerProps = {
 
 const PagesQuestions: React.FC = () => {
   const history = useHistory();
-  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-  const [listQuestions, setListQuestions] = useState<DataFormattedProps[]>(
-    [] as DataFormattedProps[]
-  );
-  const [currentAnswer, setCurrentAnswer] = useState<string>("");
-  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(
-    null
-  );
-  const [answers, setAnswers] = useState<SelectedAnswerProps[]>(
-    [] as SelectedAnswerProps[]
-  );
   const count = useSelector((state: RootState) => state.counter.value);
-  const questions = useSelector((state: RootState) => state.questions.value);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentAnswer, setCurrentAnswer] = useState("");
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number>();
+  const [listQuestions, setListQuestions] = useState<DataFormattedProps[]>([]);
+  const dispatch: AppDispatch = useDispatch();
+
+  const [answers, setAnswers] = useState<SelectedAnswerProps[]>([]);
 
   useEffect(() => {
-    async function fetchQuestions() {
-      try {
-        const response = await API.get(`?amount=${count}`);
-
-        let dataFormatted = [] as DataFormattedProps[];
-
-        if (response.status === 200) {
-          response.data.results.map((item: ItemProps) => {
-            return dataFormatted.push({
-              incorrect_answers: item.incorrect_answers,
-              question: item.question,
-              answers: [item.correct_answer, ...item.incorrect_answers].sort(),
-              correct_answer: item.correct_answer,
-            });
-          });
-        }
-
-        setListQuestions(dataFormatted);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    fetchQuestions();
-  }, []);
+    dispatch(fetchQuestions(count))
+      .then(unwrapResult)
+      .then((result) => {
+        if (result) setListQuestions(result);
+      });
+  }, [count, dispatch]);
 
   function goToNextQuestion() {
     if (currentAnswer) {
@@ -106,7 +78,7 @@ const PagesQuestions: React.FC = () => {
       setCurrentQuestion(currentQuestion + 1);
 
       setCurrentAnswer("");
-      setSelectedAnswerIndex(null);
+      setSelectedAnswerIndex(undefined);
     } else {
       alert("select a question");
     }

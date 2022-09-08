@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { setCount, resetCount } from "../../redux/slices/counter";
+import { resetCount } from "../../redux/slices/counter";
 import Header from "../../components/Header/index";
 import Count from "../../components/Count/index";
 
@@ -25,7 +25,6 @@ const PagesHome: React.FC = () => {
   }, [dispatch]);
 
   function handleClick() {
-    dispatch(setCount());
     history.push("/verification");
   }
 
