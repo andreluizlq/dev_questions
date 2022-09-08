@@ -3,6 +3,8 @@ import Header from "../../components/Header/index";
 import API from "../../services/api";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { useHistory } from "react-router-dom";
+import type { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 import {
   QuestionsBlock,
@@ -47,11 +49,12 @@ const PagesQuestions: React.FC = () => {
   const [answers, setAnswers] = useState<SelectedAnswerProps[]>(
     [] as SelectedAnswerProps[]
   );
+  const count = useSelector((state: RootState) => state.counter.value);
+  const questions = useSelector((state: RootState) => state.questions.value);
 
   useEffect(() => {
     async function fetchQuestions() {
       try {
-        const count = await localStorage.getItem("count");
         const response = await API.get(`?amount=${count}`);
 
         let dataFormatted = [] as DataFormattedProps[];

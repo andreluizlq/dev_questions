@@ -4,9 +4,9 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 export interface CounterState {
   value: number;
 }
-
+const countStorage = localStorage.getItem("count");
 const initialState: CounterState = {
-  value: 1,
+  value: countStorage ? stringToNumberFormat(countStorage) : 1,
 };
 
 export const counterSlice = createSlice({
@@ -14,10 +14,6 @@ export const counterSlice = createSlice({
   initialState,
   reducers: {
     increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
       state.value += 1;
     },
     decrement: (state) => {
@@ -26,10 +22,21 @@ export const counterSlice = createSlice({
     incrementByAmount: (state, action: PayloadAction<number>) => {
       state.value += action.payload;
     },
+    setCount: (state) => {
+      localStorage.setItem("count", state.value.toString());
+    },
+    resetCount: (state) => {
+      localStorage.setItem("count", "1");
+      state.value = 1;
+    },
   },
 });
 
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export const { increment, decrement, incrementByAmount, setCount, resetCount } =
+  counterSlice.actions;
 
 export default counterSlice.reducer;
+
+export function stringToNumberFormat(value: string): number {
+  return parseFloat(value.replace(/[.]/g, "").replace(",", "."));
+}

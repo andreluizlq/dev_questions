@@ -1,7 +1,7 @@
-import React from "react";
-import type { RootState } from "../../redux/store";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { setCount, resetCount } from "../../redux/slices/counter";
 import Header from "../../components/Header/index";
 import Count from "../../components/Count/index";
 
@@ -18,11 +18,14 @@ import {
 
 const PagesHome: React.FC = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
 
-  const count = useSelector((state: RootState) => state.counter.value);
+  useEffect(() => {
+    dispatch(resetCount());
+  }, [dispatch]);
 
   function handleClick() {
-    localStorage.setItem("count", count.toString());
+    dispatch(setCount());
     history.push("/verification");
   }
 

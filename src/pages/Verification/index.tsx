@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import type { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 import ButtonLink from "../../components/ButtonLink";
 import Header from "../../components/Header/index";
 import { VerificationBlock, Image, ButtonBlock } from "./styles";
 
 const PagesVerification: React.FC = () => {
-  const [count, setCount] = useState<string | null>("");
-
-  useEffect(() => {
-    setCount(localStorage.getItem("count"));
-  }, []);
+  const count = useSelector((state: RootState) => state.counter.value);
 
   return (
     <>
