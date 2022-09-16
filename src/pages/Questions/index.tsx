@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../../components/Header/index";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { useHistory } from "react-router-dom";
-import type { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 
 import {
@@ -34,7 +33,6 @@ type SelectedAnswerProps = {
 
 const PagesQuestions: React.FC = () => {
   const history = useHistory();
-  const count = useSelector((state: RootState) => state.counter.value);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number>();
@@ -44,12 +42,12 @@ const PagesQuestions: React.FC = () => {
   const [answers, setAnswers] = useState<SelectedAnswerProps[]>([]);
 
   useEffect(() => {
-    dispatch(fetchQuestions(count))
+    dispatch(fetchQuestions())
       .then(unwrapResult)
       .then((result) => {
         if (result) setListQuestions(result);
       });
-  }, [count, dispatch]);
+  }, [dispatch]);
 
   function goToNextQuestion() {
     if (currentAnswer) {

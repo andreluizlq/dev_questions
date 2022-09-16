@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import API from "../../services/api";
+import { RootState } from "../store";
 
 type DataFormattedProps = {
   incorrect_answers: string[];
@@ -16,31 +17,34 @@ type ItemResponse = {
 
 export interface questionsState {
   value: number;
+  questions?: [];
 }
 const initialState: questionsState = {
   value: 1,
 };
 
+// ------------------------------------------------------------------
+// Não estou usando
+// ------------------------------------------------------------------
 export const questionsSlice = createSlice({
   name: "questions",
   initialState,
-  reducers: {
-    increment: (state) => {
-      state.value += 1;
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchQuestions.fulfilled, (state, { payload }) => {});
   },
 });
-
-export const { increment } = questionsSlice.actions;
-
 export default questionsSlice.reducer;
+// ------------------------------------------------------------------
 
 export const fetchQuestions = createAsyncThunk<
   DataFormattedProps[] | undefined,
-  number
->("questions/fetchQuestions", async (count) => {
+  void,
+  { state: RootState }
+>("questions/fetchQuestions", async (_, { getState }) => {
   try {
-    const response = await API.get(`?amount=${count}`);
+    const { counter } = getState();
+    const response = await API.get(`?amount=${counter.value}`);
 
     let dataFormatted = [] as DataFormattedProps[];
 
