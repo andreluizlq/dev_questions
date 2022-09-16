@@ -2,7 +2,7 @@ import React from "react";
 
 import { HeaderBlock } from "./styles";
 
-const Header: React.FC = () => {
+const Header = () => {
   return (
     <>
       <HeaderBlock>

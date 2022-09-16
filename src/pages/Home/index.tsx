@@ -16,7 +16,7 @@ import {
   ButtonStart,
 } from "./styles";
 
-const PagesHome: React.FC = () => {
+const PagesHome = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 

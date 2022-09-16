@@ -4,7 +4,7 @@ import type { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { decrement, increment } from "../../redux/slices/counter";
 
-const Count: React.FC = () => {
+const Count = () => {
   const count = useSelector((state: RootState) => state.counter.value);
   const dispatch = useDispatch();
 

@@ -5,7 +5,7 @@ import ButtonLink from "../../components/ButtonLink";
 import Header from "../../components/Header/index";
 import { VerificationBlock, Image, ButtonBlock } from "./styles";
 
-const PagesVerification: React.FC = () => {
+const PagesVerification = () => {
   const count = useSelector((state: RootState) => state.counter.value);
 
   return (

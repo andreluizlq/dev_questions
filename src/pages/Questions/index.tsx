@@ -19,29 +19,29 @@ import {
 import { fetchQuestions } from "../../redux/slices/questions";
 import { unwrapResult } from "@reduxjs/toolkit";
 
-type DataFormattedProps = {
+type TDataFormatted = {
   incorrect_answers: string[];
   question: string;
   answers: string[];
   correct_answer: string;
 };
 
-type SelectedAnswerProps = {
-  selectedQuestion: DataFormattedProps;
+type TSelectedAnswer = {
+  selectedQuestion: TDataFormatted;
   isCorrect: boolean;
   currentAnswer: String;
 };
 
-const PagesQuestions: React.FC = () => {
+const PagesQuestions = () => {
   const history = useHistory();
   const count = useSelector((state: RootState) => state.counter.value);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number>();
-  const [listQuestions, setListQuestions] = useState<DataFormattedProps[]>([]);
+  const [listQuestions, setListQuestions] = useState<TDataFormatted[]>([]);
   const dispatch: AppDispatch = useDispatch();
 
-  const [answers, setAnswers] = useState<SelectedAnswerProps[]>([]);
+  const [answers, setAnswers] = useState<TSelectedAnswer[]>([]);
 
   useEffect(() => {
     dispatch(fetchQuestions(count))
@@ -55,7 +55,7 @@ const PagesQuestions: React.FC = () => {
     if (currentAnswer) {
       const isCorrect =
         currentAnswer === listQuestions[currentQuestion].correct_answer;
-      const answer: SelectedAnswerProps = {
+      const answer: TSelectedAnswer = {
         selectedQuestion: listQuestions[currentQuestion],
         isCorrect,
         currentAnswer,
